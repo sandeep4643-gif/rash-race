@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RASH-RACE | Neon Racing</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HOME SCREEN -->
+    <section id="homeScreen" class="screen active">
+        <div class="grid-bg"></div>
+
+        <div class="home-content">
+            <p class="kicker">ARCADE RACING // EST. 2026</p>
+
+            <h1 class="logo">
+                RASH<span>-</span>RACE
+            </h1>
+
+            <p class="tagline">
+                NO BRAKES. NO FEAR. OWN THE CIRCUIT.
+            </p>
+
+            <button class="primary-btn" onclick="openGarage()">
+                ENTER THE GARAGE ↗
+            </button>
+
+            <p class="footer-text">
+                NEON CIRCUIT • 2D TOP-DOWN • PLAYER VS AI
+            </p>
+        </div>
+    </section>
+
+
+    <!-- CAR SELECTION SCREEN -->
+    <section id="garageScreen" class="screen">
+
+        <header class="topbar">
+            <div class="small-logo">RASH<span>-</span>RACE</div>
+            <button class="back-btn" onclick="goHome()">← BACK</button>
+        </header>
+
+        <div class="garage-heading">
+            <p class="kicker">01 / YOUR MACHINE</p>
+            <h2>CHOOSE YOUR RIDE</h2>
+            <p>Select your racing machine.</p>
+        </div>
+
+        <div class="car-container">
+
+            <!-- CAR 1 -->
+            <div class="car-card selected" id="voltCard"
+                 onclick="selectCar('volt')">
+
+                <div class="car-image volt">
+                    <div class="car-shape">🏎️</div>
+                </div>
+
+                <h3>VOLT GT</h3>
+                <p>BALANCED STREET RACER</p>
+
+                <div class="stat">
+                    <span>Speed</span>
+                    <div class="bar"><div style="width:78%"></div></div>
+                </div>
+
+                <div class="stat">
+                    <span>Acceleration</span>
+                    <div class="bar"><div style="width:75%"></div></div>
+                </div>
+
+                <div class="stat">
+                    <span>Handling</span>
+                    <div class="bar"><div style="width:82%"></div></div>
+                </div>
+
+                <button class="select-btn">SELECT CAR</button>
+            </div>
+
+
+            <!-- CAR 2 -->
+            <div class="car-card" id="venomCard"
+                 onclick="selectCar('venom')">
+
+                <div class="car-image venom">
+                    <div class="car-shape">🏎️</div>
+                </div>
+
+                <h3>VENOM X</h3>
+                <p>HIGH-SPEED SPECIALIST</p>
+
+                <div class="stat">
+                    <span>Speed</span>
+                    <div class="bar"><div style="width:96%"></div></div>
+                </div>
+
+                <div class="stat">
+                    <span>Acceleration</span>
+                    <div class="bar"><div style="width:72%"></div></div>
+                </div>
+
+                <div class="stat">
+                    <span>Handling</span>
+                    <div class="bar"><div style="width:64%"></div></div>
+                </div>
+
+                <button class="select-btn">SELECT CAR</button>
+            </div>
+
+
+            <!-- CAR 3 -->
+            <div class="car-card" id="pulseCard"
+                 onclick="selectCar('pulse')">
+
+                <div class="car-image pulse">
+                    <div class="car-shape">🏎️</div>
+                </div>
+
+                <h3>PULSE R</h3>
+                <p>AGILE CORNER CARVER</p>
+
+                <div class="stat">
+                    <span>Speed</span>
+                    <div class="bar"><div style="width:72%"></div></div>
+                </div>
+
+                <div class="stat">
+                    <span>Acceleration</span>
+                    <div class="bar"><div style="width:91%"></div></div>
+                </div>
+
+                <div class="stat">
+                    <span>Handling</span>
+                    <div class="bar"><div style="width:95%"></div></div>
+                </div>
+
+                <button class="select-btn">SELECT CAR</button>
+            </div>
+
+        </div>
+
+        <div class="garage-footer">
+            <p id="selectedCarText">Selected: VOLT GT</p>
+
+            <button class="primary-btn" onclick="startGame()">
+                CONFIRM CAR ↗
+            </button>
+        </div>
+
+    </section>
+
+
+<!-- RACING SCREEN -->
+ <div class="rotate-message">
+    <div class="rotate-icon">↻</div>
+    <h2>ROTATE YOUR PHONE</h2>
+    <p>Turn your device horizontally to enter the race!</p>
+</div>
+<section id="raceScreen" class="screen">
+
+    <header class="race-header">
+        <div class="small-logo">RASH<span>-</span>RACE</div>
+
+        <div class="race-stats">
+            <div>
+                <small>POSITION</small>
+                <strong id="position">1 / 4</strong>
+            </div>
+            <div>
+                <small>LAP</small>
+                <strong id="lap">1 / 3</strong>
+            </div>
+            <div>
+                <small>SPEED</small>
+                <strong><span id="speed">0</span> KM/H</strong>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="exitRace()">EXIT</button>
+    </header>
+
+    <div class="race-layout">
+        <div class="track-wrapper">
+            <canvas id="gameCanvas" width="1000" height="700"></canvas>
+
+            <div id="raceMessage" class="race-message hidden">
+                <h2 id="raceMessageTitle">RACE FINISHED!</h2>
+                <p id="raceMessageText"></p>
+                <button class="primary-btn" onclick="restartRace()">RACE AGAIN</button>
+                <button class="back-btn" onclick="exitRace()">GARAGE</button>
+            </div>
+        </div>
+
+        <aside class="race-sidebar">
+            <div class="panel">
+                <p class="kicker">TRACK RADAR</p>
+                <h3>MINI MAP</h3>
+                <canvas id="miniMap" width="220" height="180"></canvas>
+            </div>
+
+            <div class="panel">
+                <p class="kicker">RACE CONTROL</p>
+                <h3>CONTROLS</h3>
+                <p>↑ Accelerate</p>
+                <p>↓ Reverse / Brake</p>
+                <p>← → Steering</p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MOBILE TOUCH CONTROLS -->
+    <div class="mobile-controls">
+
+        <div class="steering-controls">
+            <button class="control-btn" data-control="left">◀</button>
+            <button class="control-btn" data-control="right">▶</button>
+        </div>
+
+        <div class="driving-controls">
+            <button class="control-btn reverse-btn"
+                    data-control="reverse">▼<small>REVERSE</small></button>
+
+            <button class="control-btn accelerate-btn"
+                    data-control="accelerate">▲<small>GO</small></button>
+        </div>
+
+    </div>
+
+</section>
+
+    <script src="script.js"></script>
+</body>
+</html>
