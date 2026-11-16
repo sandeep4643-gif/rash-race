@@ -152,6 +152,7 @@ function createBots() {
 ===================================== */
 
 function startGame() {
+   releaseMobileTouches();
     player = createPlayer();
     bots = createBots();
 
@@ -184,6 +185,7 @@ function restartRace() {
 }
 
 function exitRace() {
+   releaseMobileTouches();
     gameRunning = false;
 
     if (animationId) {
@@ -229,26 +231,92 @@ document.addEventListener("keyup", event => {
    MOBILE TOUCH CONTROLS
 ===================================== */
 
+const activeTouches = new Map();
+
+function getControlName(button) {
+    const control = button.dataset.control.toLowerCase();
+
+    if (control === "accelerate") return "up";
+    if (control === "reverse" || control === "brake") return "down";
+
+    return control;
+}
+
+function updateTouchKeys(control) {
+    keys[control] = [...activeTouches.values()].includes(control);
+}
+
+function releaseMobileTouches() {
+    const controls = [...activeTouches.values()];
+
+    activeTouches.clear();
+
+    controls.forEach(control => {
+        keys[control] = false;
+    });
+
+    document.querySelectorAll(".control-btn").forEach(button => {
+        button.classList.remove("pressed");
+    });
+}
+
+function releasePointer(event) {
+    const control = activeTouches.get(event.pointerId);
+
+    if (!control) return;
+
+    activeTouches.delete(event.pointerId);
+    updateTouchKeys(control);
+
+    document.querySelectorAll(".control-btn").forEach(button => {
+        if (getControlName(button) === control) {
+            const stillPressed = [...activeTouches.values()]
+                .includes(control);
+
+            if (!stillPressed) {
+                button.classList.remove("pressed");
+            }
+        }
+    });
+}
+
 document.querySelectorAll("[data-control]").forEach(button => {
 
-    const control = button.dataset.control;
-
-    function press(event) {
+    button.addEventListener("pointerdown", event => {
         event.preventDefault();
+
+        if (!gameRunning || countdownActive) return;
+
+        const control = getControlName(button);
+
+        if (!["up", "down", "left", "right"].includes(control)) {
+            return;
+        }
+
+        activeTouches.set(event.pointerId, control);
         keys[control] = true;
-    }
 
-    function release(event) {
-        event.preventDefault();
-        keys[control] = false;
-    }
+        button.classList.add("pressed");
 
-    button.addEventListener("pointerdown", press);
-    button.addEventListener("pointerup", release);
-    button.addEventListener("pointerleave", release);
-    button.addEventListener("pointercancel", release);
+        try {
+            button.setPointerCapture(event.pointerId);
+        } catch (error) {}
+    });
+
+    button.addEventListener("pointerup", releasePointer);
+    button.addEventListener("pointercancel", releasePointer);
+    button.addEventListener("lostpointercapture", releasePointer);
 });
 
+window.addEventListener("pointerup", releasePointer);
+window.addEventListener("pointercancel", releasePointer);
+window.addEventListener("blur", releaseMobileTouches);
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        releaseMobileTouches();
+    }
+});
 
 /* =====================================
    PLAYER PHYSICS
