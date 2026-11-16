@@ -678,3 +678,37 @@ body {
         font-size: 9px;
     }
 }
+/* =================================
+   MOBILE CONTROL TOUCH FIX
+================================= */
+
+.mobile-controls {
+    z-index: 10000 !important;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.mobile-controls .steering-controls,
+.mobile-controls .driving-controls {
+    pointer-events: auto;
+}
+
+.mobile-controls .control-btn {
+    position: relative;
+    z-index: 10001;
+    pointer-events: auto;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.mobile-controls .control-btn:active,
+.mobile-controls .control-btn.pressed {
+    transform: scale(0.90);
+    filter: brightness(1.7);
+    box-shadow: 0 0 22px currentColor;
+}
+
